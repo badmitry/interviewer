@@ -6,6 +6,7 @@ public class Main {
         vectorList.add(4);
         vectorList.add(6);
         vectorList.add(4);
+		vectorList.addBack(10);
         for(Integer item : vectorList){
             System.out.println(item);
         }
