@@ -11,6 +11,7 @@ public class VectorList<E> implements Iterable<E> {
     public int size(){
         return  counter;
     }
+	
     public void add(E element){
         if (counter == 0){    // первый узел надо обработать отдельно, иначе в первом узле элемент будет балластом
             node.set(element);
@@ -20,14 +21,22 @@ public class VectorList<E> implements Iterable<E> {
         }
         counter++;             // увеличим счетчик элементов
     }
+	
+	public void addBack(E element){
+		node.addBack(element);
+		counter++;
+	}
+	
     @Override
     public Iterator<E> iterator() {
         return new VectorIterator(node);
     }
+	
 // Узел с элементом, сделан внутренним, чтобы не светить его наружу
     private class Node<E>{
         private E element;
         private Node<E> next = null;
+		private Node<E> preview = null;
 
         Node(){}
         Node(E element){
@@ -44,12 +53,22 @@ public class VectorList<E> implements Iterable<E> {
                 next = new Node<>(element);
             }
         }
+		void addBack(E element){
+			if (isPreview()) {
+				preview.addBack(element);
+			}else {
+				preview = new Node<>(element);
+			}
+		}
         E get(){
             return element;
         }
         boolean isNext(){
             return next != null;
         }
+		boolean isPreview() {
+			return preview != null;
+		}
     }
 // Итератор, светить наружу его тоже не хочется, он слишком специфичный.
     private class VectorIterator implements Iterator<E>{
@@ -67,6 +86,15 @@ public class VectorList<E> implements Iterable<E> {
         public E next() {
             if (isFirst) isFirst = false;
             else current = current.next;
+            return current.get();
+        }
+		@Override
+		public boolean hasBack() {
+			return current.isBack;
+		}
+		@Override
+        public E preview() {
+			current = current.preview;
             return current.get();
         }
     }
